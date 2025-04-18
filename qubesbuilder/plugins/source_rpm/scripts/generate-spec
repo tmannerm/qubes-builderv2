@@ -82,6 +82,61 @@ if grep -q "@CHANGELOG@" "$input.tmp"; then
     "$(dirname "$0")"/generate-changelog "${source_dir}" "$input.tmp"
 fi
 
+# Handle openSUSE package naming differences
+if [ "$DIST_NAME" = "opensuse-leap" ] || [ "$DIST_NAME" = "opensuse-tumbleweed" ]; then
+    # Handle simple different package names
+    sed -i \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)python3dist(sphinx)$/\1Requires:\2python3-Sphinx/g" \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)python\(3\|%{python3_pkgversion}\)-sphinx$/\1Requires:\2python\3-Sphinx/g" \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)python\(3\|%{python3_pkgversion}\)-yaml$/\1Requires:\2python\3-PyYAML/g" \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)python\(3\|%{python3_pkgversion}\)-pyyaml$/\1Requires:\2python\3-PyYAML/g" \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)netpbm-progs$/\1Requires:\2netpbm/g" \
+        -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)xorg-x11-drv-dummy$/\1Requires:\2xf86-video-dummy/g" \
+        "$input.tmp"
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)pycairo$/\1Requires:\2python2-cairo/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)PyYAML$/\1Requires:\2python2-PyYAML/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)dejavu-sans-fonts$/\1Requires:\2dejavu-fonts/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)libGL-devel$/\1Requires:\2Mesa-libGL-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)libGLU-devel$/\1Requires:\2glu-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)dbus-devel$/\1Requires:\2dbus-1-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)dbus-glib-devel$/\1Requires:\2dbus-1-glib-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)edk2-tools$/\1Requires:\2ovmf-tools/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)edk2-ovmf$/\1Requires:\2qemu-ovmf-x86_64/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]a-z0-9-]\+\)ipxe-roms-qemu\([[:space:]a-z0-9-]*\)/\1Requires:\2qemu-ipxe\3/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]a-z0-9-]\+\)seabios-bin\([[:space:]a-z0-9-]*\)/\1Requires:\2qemu-seabios\3/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)pixman-devel$/\1Requires:\2libpixman-1-0-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)yajl-devel$/\1Requires:\2libyajl-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)iscsi-initiator-utils$/\1Requires:\2open-iscsi/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)numactl-devel$/\1Requires:\2libnuma-devel/g" \
+    #    -e "s/^BuildRequires:\([[:space:]]\+\)python%{python3_pkgversion}-hidapi\(.*\)/BuildRequires:\1libhidapi-devel\2/g" \
+    #    -e "s/^Requires:\([[:space:]]\+\)python%{python3_pkgversion}-hidapi\(.*\)/Requires:\1python%{python3_pkgversion}-hidraw0\2/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)elfutils-libelf-devel$/\1Requires:\2libelf-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)nettle-devel$/\1Requires:\2libnettle-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)audit-libs-devel$/\1Requires:\2audit-devel/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)bzip2-devel\(.*\)/\1Requires:\2libbz2-devel\3/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)acpica-tools\(.*\)/\1Requires:\2acpica\3/g" \
+    # These are not a separate package but contained in the base package
+    sed -i \
+        -e "s/^\(Build\)\?Requires:\([[:space:]a-z0-9-]\+\)perl-generators\([[:space:]a-z0-9-]*\)/\1Requires:\2perl\3/g" \
+        "$input.tmp"
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]a-z0-9-]\+\)perl-interpreter\([[:space:]a-z0-9-]*\)/\1Requires:\2perl\3/g" \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)systemd-units$/\1Requires:\2systemd/g" \
+    #    -e "s/^\(Build\)\?Requires:[[:space:]]\+glusterfs-api-devel.*//g" \
+    #    "$1.tmp"
+    # Make sure python setuptools is also installed when python devel package is
+    #sed -i \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)python\(2\|3\|%{python3_pkgversion}\)-devel$/\1Requires:\2python\3-devel python\3-setuptools/g" \
+    #    "$1.tmp"
+    # Make sure graphviz is also installed when asciidoc package is
+    #sed -i \
+    #    -e "s/^\(Build\)\?Requires:\([[:space:]]\+\)asciidoc\(.*\)/\1Requires:\2asciidoc\3 graphviz/g" \
+    #    "$1.tmp"
+    # Make sure parted is also installed when parted devel package is
+    #sed -i \
+    #    -e "s/^BuildRequires:\([[:space:]]\+\)parted-devel$/BuildRequires:\1parted-devel parted/g" \
+    #    "$1.tmp"
+fi
+
 cat "$input.tmp" > "$output"
 rm -rf "$input.tmp"
 

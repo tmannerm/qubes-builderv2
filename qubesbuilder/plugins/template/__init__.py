@@ -208,6 +208,12 @@ class TemplateBuilderPlugin(TemplatePlugin):
                     ),
                 }
             )
+            if self.template.distribution.is_opensuse():
+                self.environment.update(
+                    {
+                        "OPENSUSE_MIRROR": " ".join(mirrors),
+                    }
+                )
         elif (
             self.template.distribution.is_deb()
             or self.template.distribution.is_ubuntu()

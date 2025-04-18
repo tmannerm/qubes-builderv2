@@ -149,6 +149,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
         self.environment.update(
             {
                 "DIST": self.dist.name,
+                "DIST_VER": self.dist.version,
                 "PACKAGE_SET": (
                     self.dist.package_set.replace("host", "dom0")
                     if str(self.config.use_qubes_repo.get("version", None))
@@ -300,7 +301,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
             # On Fedora /usr/bin/mock is a (consolehelper) wrapper,
             # which among other things, strips environment variables
             mock_cmd = [
-                "sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
+                "sudo --preserve-env=DIST,DIST_VER,PACKAGE_SET,USE_QUBES_REPO_VERSION",
                 "/usr/libexec/mock/mock --no-cleanup-after --verbose",
                 f"--rebuild {self.executor.get_build_dir() / source_info['srpm']}",
                 f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
@@ -326,6 +327,8 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
                 mock_cmd.append(f"--define 'dist .{dist_tag}'")
             if chroot_cache.exists():
                 mock_cmd.append("--no-clean")
+            if self.dist.is_opensuse():
+                mock_cmd.append(f"--macro-file {self.executor.get_plugins_dir()}/chroot_rpm/conf/macros.srpm")
 
             files_inside_executor_with_placeholders = [
                 f"@PLUGINS_DIR@/chroot_rpm/mock/{mock_conf}"
@@ -333,7 +336,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
 
             self.environment["BIND_MOUNT_ENABLE"] = "True"
             buildinfo_cmd = [
-                "sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION,BIND_MOUNT_ENABLE",
+                "sudo --preserve-env=DIST,DIST_VER,PACKAGE_SET,USE_QUBES_REPO_VERSION,BIND_MOUNT_ENABLE",
                 "/usr/libexec/mock/mock",
                 f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
                 f'--chroot /plugins/build_rpm/scripts/rpmbuildinfo /builddir/build/SRPMS/{source_info["srpm"]} > {self.executor.get_build_dir()}/{buildinfo_file}',

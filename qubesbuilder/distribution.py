@@ -22,6 +22,7 @@ import re
 from qubesbuilder.exc import DistributionError
 
 FEDORA_RE = re.compile(r"^fc([0-9]+)$")
+LEAP_RE = re.compile(r"^lp([0-9]+)$")
 CENTOS_STREAM_RE = re.compile(r"^centos-stream([0-9]+)$")
 
 DEBIAN = {
@@ -65,11 +66,13 @@ class QubesDistribution:
 
         self.version = None
         is_fedora = FEDORA_RE.match(self.name)
+        is_leap = LEAP_RE.match(self.name)
         is_centos_stream = CENTOS_STREAM_RE.match(self.name)
         is_debian = DEBIAN.get(self.name, None)
         is_ubuntu = UBUNTU.get(self.name, None)
         is_archlinux = self.name == "archlinux"
         is_gentoo = self.name == "gentoo"
+        is_tumbleweed = self.name == "tw"
         is_windows = WINDOWS.get(self.name, None)
         if is_fedora:
             self.fullname = "fedora"
@@ -80,6 +83,16 @@ class QubesDistribution:
             self.fullname = "centos-stream"
             self.version = is_centos_stream.group(1)
             self.tag = f"el{self.version}"
+            self.type = "rpm"
+        elif is_leap:
+            self.fullname = "opensuse-leap"
+            self.version = is_leap.group(1)[:2] + '.' + is_leap.group(1)[-1:]
+            self.tag = self.name
+            self.type = "rpm"
+        elif is_tumbleweed:
+            self.fullname = "opensuse-tumbleweed"
+            self.version = "rolling"
+            self.tag = "tw"
             self.type = "rpm"
         elif is_debian:
             self.fullname = "debian"
@@ -134,7 +147,12 @@ class QubesDistribution:
         return hash(self.distribution)
 
     def is_rpm(self) -> bool:
-        if FEDORA_RE.match(self.name) or CENTOS_STREAM_RE.match(self.name):
+        if FEDORA_RE.match(self.name) or CENTOS_STREAM_RE.match(self.name) or LEAP_RE.match(self.name):
+            return True
+        return self.name == "tw"
+
+    def is_opensuse(self) -> bool:
+        if LEAP_RE.match(self.name) or self.name == "tw":
             return True
         return False
 
