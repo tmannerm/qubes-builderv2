@@ -49,6 +49,15 @@ set_rpm_defines() {
         dist_ver="${raw_dist#el}"
         rpm_defines+=(--define "centos $dist_ver")
         rpm_defines+=(--define "rhel $dist_ver")
+    elif [[ "$raw_dist" = "lp"* ]]; then
+        dist_ver="${raw_dist#lp}"
+        # We only need to distinquish between TW and Leap 15.x
+        rpm_defines+=(--define "suse_version 1500")
+        rpm_defines+=(--define "is_opensuse 1")
+    elif [[ "$raw_dist" = "tw" ]]; then
+        dist_ver="1699"
+        rpm_defines+=(--define "suse_version $dist_ver")
+        rpm_defines+=(--define "is_opensuse 1")
     fi
 }
 

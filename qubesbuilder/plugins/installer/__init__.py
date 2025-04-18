@@ -141,6 +141,7 @@ class InstallerPlugin(DistributionPlugin):
         self.environment.update(
             {
                 "DIST": self.dist.name,
+                "DIST_VER": self.dist.version,
                 "INSTALL_DIR": f"{self.executor.get_builder_dir()}/mnt",
                 "ARTIFACTS_DIR": str(self.executor.get_build_dir()),
                 "PLUGINS_DIR": str(self.executor.get_plugins_dir()),
@@ -336,7 +337,7 @@ class InstallerPlugin(DistributionPlugin):
                 ]
 
                 mock_cmd = [
-                    f"sudo --preserve-env=DIST,USE_QUBES_REPO_VERSION",
+                    f"sudo --preserve-env=DIST,DIST_VER,USE_QUBES_REPO_VERSION",
                     f"/usr/libexec/mock/mock",
                     f"--root {self.executor.get_plugins_dir()}/installer/mock/{mock_conf}",
                     "--init",

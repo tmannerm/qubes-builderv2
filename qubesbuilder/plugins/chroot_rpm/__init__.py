@@ -66,6 +66,7 @@ class RPMChrootPlugin(RPMDistributionPlugin, ChrootPlugin):
         self.environment.update(
             {
                 "DIST": self.dist.name,
+                "DIST_VER": self.dist.version,
                 "PACKAGE_SET": self.dist.package_set,
             }
         )
@@ -75,7 +76,7 @@ class RPMChrootPlugin(RPMDistributionPlugin, ChrootPlugin):
         ]
 
         mock_cmd = [
-            f"sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
+            f"sudo --preserve-env=DIST,DIST_VER,PACKAGE_SET,USE_QUBES_REPO_VERSION",
             f"/usr/libexec/mock/mock",
             f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
             "--disablerepo=builder-local",
