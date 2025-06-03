@@ -12,44 +12,68 @@ backend-vmm: xen
 debug: true
 verbose: true
 qubes-release: r4.2
+gpg-client: '/usr/bin/qubes-gpg-client-wrapper'
 skip-git-fetch: true
 
 mirrors:
-  vm-fc39:
+  vm-fc41:
     - https://www.nic.funet.fi/pub/mirrors/fedora.redhat.com/pub/fedora/linux
   vm-lp155:
     - https://ftp.funet.fi/pub/mirrors/ftp.opensuse.com/pub/opensuse
   vm-lp156:
     - https://ftp.funet.fi/pub/mirrors/ftp.opensuse.com/pub/opensuse
-  vm-lp157:
+  vm-tw:
     - https://ftp.funet.fi/pub/mirrors/ftp.opensuse.com/pub/opensuse
   qubes:
     - https://ftp.acc.umu.se/mirror/qubes-os.org/repo/yum
 
+sign-key:
+  rpm: '60EDBFB2B0DA5D5687FDA98F301B46327290AF58'
+  iso: '60EDBFB2B0DA5D5687FDA98F301B46327290AF58'
+
+cache:
+  vm-lp155:
+    packages:
+      - xorg-x11-server-sdk
+      - pandoc-cli
+      - python311-setuptools
+  vm-lp156:
+    packages:
+      - xorg-x11-server-sdk
+      - pandoc-cli
+      - python311-setuptools
+  vm-tw:
+    packages:
+      - xorg-x11-server-sdk
+      - pandoc-cli
+      - python3-setuptools
+
 distributions:
-  #- vm-lp155
+  - vm-lp155
   - vm-lp156
-  #- vm-lp157
   - vm-tw
-  - vm-fc40
   - vm-fc41
-  - vm-fc42
 
 templates:
   - leap-15.5:
       dist: lp155
+  - leap-15.5-minimal:
+      dist: lp155
+      flavor: minimal
       options:
         - minimal
   - leap-15.6:
       dist: lp156
-      options:
-        - minimal
-  - leap-15.7:
-      dist: lp157
+  - leap-15.6-minimal:
+      dist: lp156
+      flavor: minimal
       options:
         - minimal
   - tumbleweed:
       dist: tw
+  - tumbleweed-minimal:
+      dist: tw
+      flavor: minimal
       options:
         - minimal
   - fedora-41:
@@ -60,96 +84,103 @@ templates:
 components:
   - builder-rpm:
       packages: False
-      #url: https://github.com/tmannermaa/qubes-builder-rpm
+      #url: https://github.com/tmannerm/qubes-builder-rpm.git
       branch: main
+      #maintainers:
+      #  # tmannerm
+      #  - '895FB9C418890B645A335322B3CA027218C449B3'
   - core-vchan-xen
-  # On tw: error: "_FORTIFY_SOURCE" redefined
-  #- core-qubesdb
+  - core-qubesdb
   - core-qrexec
   - linux-utils
   # Missing fonts?
   #- python-objgraph:
   #    branch: main
-  - python-qasync:
-      branch: main
-  - python-panflute:
-      branch: main
+  #- python-qasync:
+  #    branch: main
+  #- python-panflute:
+  #    branch: main
   # Needs rust-cc-devel, rust-debugger-commn and rust-libc-devel
   #- rpm-oxide
   # exception: cannot load library 'libxcb.so': libxcb.so: cannot open shared object file: No such file or directory
   #- core-admin-client
   - core-agent-linux
-  - artwork
+  #- artwork
   - gui-common
   # Requires dealing with -fcf-protection in pulse/Makefile because that's not in GCC7 (probably from 8 onward)
   #- gui-daemon
   - gui-agent-linux
   - app-linux-split-gpg:
       branch: main
-  - app-linux-split-gpg2:
-      branch: main
-  - app-linux-gpg-sign:
-      branch: main
-  - app-thunderbird:
-      branch: main
+  #- app-linux-split-gpg2:
+  #    branch: main
+  #- app-linux-gpg-sign:
+  #    branch: main
+  #- app-thunderbird:
+  #    branch: main
   # Something weird in paths (libexec issue?):
   #   error: File not found: /builddir/build/BUILDROOT/qubes-pdf-converter-2.1.19-1.lp155.x86_64/usr/lib/qubes/qpdf-convert-server
   #   error: File not found: /builddir/build/BUILDROOT/qubes-pdf-converter-2.1.19-1.lp155.x86_64/usr/bin/qvm-convert-pdf
-  #- app-linux-pdf-converter:
-  #    branch: main
+  - app-linux-pdf-converter:
+      branch: main
   - app-linux-img-converter:
       branch: main
   - app-linux-input-proxy:
       branch: main
   - app-linux-usb-proxy:
       branch: main
-  - app-linux-snapd-helper:
-      branch: main
-  - app-shutdown-idle:
-      branch: main
-  - app-u2f:
-      branch: main
+  #- app-linux-snapd-helper:
+  #    branch: main
+  #- app-shutdown-idle:
+  #    branch: main
+  #- app-u2f:
+  #    branch: main
   # Doc path issues
   #- video-companion:
   #    branch: main
   # Needs rust-packaging >= 23
   #- notification-proxy
-  - salt
+  #- salt
   - mgmt-salt
-  - mgmt-salt-base
-  - mgmt-salt-base-topd
-  - mgmt-salt-base-config
+  #- mgmt-salt-base
+  #- mgmt-salt-base-topd
+  #- mgmt-salt-base-config
   - repo-templates
   - meta-packages
-  - manager
-  - desktop-linux-common:
-      branch: main
-  - desktop-linux-kde
-  - desktop-linux-xfce4
+  #- manager
+  #- desktop-linux-common:
+  #    branch: main
+  #- desktop-linux-kde
+  #- desktop-linux-xfce4
   # find-lang.sh issue
   #- desktop-linux-xfce4-xfwm4
   # Doc path issues
   #- desktop-linux-i3
-  - desktop-linux-i3-settings-qubes
+  #- desktop-linux-i3-settings-qubes
   # Need lua-ldoc
   #- desktop-linux-awesome
-  - desktop-linux-manager
-  - desktop-linux-menu
-  - disk-password-gui
+  #- desktop-linux-manager
+  #- desktop-linux-menu
+  #- disk-password-gui
   # libexec issue: Can't find files in /usr/lib/qubes-fwupd
-  #- fwupd
-  - grubby-dummy:
-      branch: main
-  - dummy-psu
-  - dummy-backlight
-  - linux-gbulb:
-      branch: main
-  - linux-scrypt
+  - fwupd
+  #- grubby-dummy:
+  #    branch: main
+  #- dummy-psu
+  #- dummy-backlight
+  #- linux-gbulb:
+  #    branch: main
+  #- linux-scrypt
 
+#executor:
+#  type: podman
+#  options:
+#    image: 'qubes-builder-fedora:latest'
+#    image: 'qubes-builder-opensuse:latest'
 executor:
-  type: podman
+  type: qubes
   options:
-    image: "qubes-builder-fedora:latest"
+    dispvm: "@dispvm"
 
 stages:
   - fetch

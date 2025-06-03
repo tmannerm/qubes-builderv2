@@ -85,12 +85,12 @@ class QubesDistribution:
             self.tag = f"el{self.version}"
             self.type = "rpm"
         elif is_leap:
-            self.fullname = "opensuse-leap"
+            self.fullname = "leap"
             self.version = is_leap.group(1)[:2] + '.' + is_leap.group(1)[-1:]
             self.tag = self.name
             self.type = "rpm"
         elif is_tumbleweed:
-            self.fullname = "opensuse-tumbleweed"
+            self.fullname = "tumbleweed"
             self.version = "rolling"
             self.tag = "tw"
             self.type = "rpm"

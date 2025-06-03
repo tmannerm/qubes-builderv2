@@ -348,7 +348,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
             # distribution tag. For example, 'fc32', 'fc32.qubes', etc.
             cmd += [
                 f"{self.executor.get_plugins_dir()}/build_rpm/scripts/filter-packages-by-dist-arch "
-                f"{self.executor.get_build_dir()} {self.executor.get_build_dir()}/rpm {dist_tag} {self.dist.architecture}"
+                f"{self.executor.get_build_dir()}/{self.dist.fullname}-{self.dist.version}-{self.dist.architecture}/root/builddir/build {self.executor.get_build_dir()}/rpm {dist_tag} {self.dist.architecture}"
             ]
             try:
                 self.executor.run(
