@@ -18,7 +18,8 @@ qubes-release: r4.3
 distributions:
   - host-fc41
   - vm-bookworm
-  - vm-fc41
+  - vm-trixie
+  - vm-fc42
 
 templates:
   - fedora-41-xfce:
@@ -146,13 +147,15 @@ components:
   - desktop-linux-kde
   - desktop-linux-xfce4
   - desktop-linux-xfce4-xfwm4
+  - desktop-linux-xfce4-xfwm4-420:
+      url: https://github.com/QubesOS/qubes-desktop-linux-xfce4-xfwm4
+      branch: xfce-4.20
   - desktop-linux-i3
   - desktop-linux-i3-settings-qubes
   - desktop-linux-awesome
   - desktop-linux-manager
   - desktop-linux-menu
   - disk-password-gui
-  - libwnck3
   - xfdesktop
   - fwupd
   - flashrom
@@ -162,15 +165,13 @@ components:
   - dummy-backlight
   - zfs
   - zfs-dkms
-  - xorg-x11-server
   - linux-pvgrub2
   - linux-gbulb:
       branch: main
   - linux-scrypt
   - qubes-release
-  - pykickstart
+  - dist-upgrade
   - blivet
-  - lorax
   - lorax-templates
   - anaconda
   - anaconda-addon

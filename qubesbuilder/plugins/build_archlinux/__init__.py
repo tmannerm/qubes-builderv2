@@ -276,6 +276,7 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
             makepkg_conf = f"{self.executor.get_plugins_dir()}/chroot_archlinux/conf/makepkg-x86_64.conf"
 
             cmd = [
+                f"sudo mkdir -p /usr/local/share/devtools/makepkg.conf.d/",
                 f"sudo cp {makepkg_conf} /usr/local/share/devtools/makepkg.conf.d/qubes-x86_64.conf",
             ]
 
@@ -369,8 +370,6 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
                 f"-d {self.executor.get_repository_dir()}:/builder/repository -- ",
                 f"--syncdeps --noconfirm --skipinteg",
             ]
-            # make stdout a pipe instead of pts, to not confuse gpgme
-            build_command += ["| cat"]
 
             cmd += [f"cd {source_dir}", " ".join(build_command)]
 
