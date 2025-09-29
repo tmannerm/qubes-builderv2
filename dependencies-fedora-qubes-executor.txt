@@ -2,8 +2,10 @@ createrepo_c
 debootstrap
 devscripts
 dnf-plugins-core
+dosfstools
 dpkg-dev
 git
+hostname
 mock
 pbuilder
 perl-Digest-MD5

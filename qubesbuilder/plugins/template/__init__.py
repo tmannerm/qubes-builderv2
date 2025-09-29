@@ -663,7 +663,12 @@ class TemplateBuilderPlugin(TemplatePlugin):
             prep_info = {
                 "timestamp": self.template.timestamp,
             }
-            self.save_artifacts_info(self.stage, prep_info)
+            self.save_artifacts_info(
+                self.stage,
+                self.template.name,
+                prep_info,
+                self.config.templates_dir,
+            )
 
         #
         # Build
@@ -733,7 +738,12 @@ class TemplateBuilderPlugin(TemplatePlugin):
                 "rpms": [str(rpm_fn)],
                 "timestamp": self.template.timestamp,
             }
-            self.save_artifacts_info(self.stage, build_info)
+            self.save_artifacts_info(
+                self.stage,
+                self.template.name,
+                build_info,
+                self.config.templates_dir,
+            )
 
         # Check that we have LocalExecutor for next stages
         if self.stage in ("sign", "publish", "upload") and not isinstance(
@@ -868,7 +878,12 @@ class TemplateBuilderPlugin(TemplatePlugin):
                 }
             )
             # Save package information we published for committing into current
-            self.save_artifacts_info(self.stage, publish_info)
+            self.save_artifacts_info(
+                self.stage,
+                self.template.name,
+                publish_info,
+                self.config.templates_dir,
+            )
 
         if self.stage == "publish" and unpublish:
             if not self.is_published(repository_publish):
@@ -891,7 +906,12 @@ class TemplateBuilderPlugin(TemplatePlugin):
                 if r["name"] != repository_publish
             ]
             if publish_info.get("repository-publish", []):
-                self.save_artifacts_info(stage="publish", info=publish_info)
+                self.save_artifacts_info(
+                    self.stage,
+                    self.template.name,
+                    publish_info,
+                    self.config.templates_dir,
+                )
             else:
                 self.log.info(
                     f"{self.template}: Not published anywhere else, deleting publish info."
