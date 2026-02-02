@@ -16,11 +16,11 @@ qubes-release: r4.2
 distributions:
   - host-fc37
   - vm-bookworm
-  - vm-fc41
+  - vm-fc42
 
 templates:
-  - fedora-41-xfce:
-      dist: fc41
+  - fedora-42-xfce:
+      dist: fc42
       flavor: xfce
       options:
         - selinux
@@ -53,7 +53,7 @@ components:
       branch: main
   - template-whonix:
       packages: False
-      branch: master
+      branch: bookworm
       url: https://github.com/Whonix/qubes-template-whonix
       maintainers:
         - '916B8D99C38EAF5E8ADC7A2A8D66066A2EEACCDA'
@@ -120,8 +120,7 @@ components:
       branch: main
   - app-u2f:
       branch: main
-  - video-companion:
-      branch: main
+  - video-companion
   - notification-proxy
   - screenshot-helper
   - python-looseversion

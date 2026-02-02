@@ -163,7 +163,7 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
             parameters.get(self.dist.distribution, {}).get("source", {})
         )
 
-    def run(self):
+    def run(self, **kwargs):
         """
         Run plugin for given stage.
         """
@@ -298,7 +298,12 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
                 ),
             }
 
-            chroot_dir = self.config.cache_dir / "chroot" / self.dist.name
+            chroot_dir = (
+                self.config.cache_dir
+                / "chroot"
+                / self.dist.distribution
+                / self.dist.nva
+            )
             chroot_archive = "root.tar.gz"
 
             if (chroot_dir / chroot_archive).exists():

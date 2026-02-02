@@ -128,7 +128,7 @@ class QubesDistribution:
             raise DistributionError(
                 f"Unsupported distribution '{self.distribution}'."
             )
-
+        self.nva = f"{self.fullname}-{self.version}-{self.architecture}"
         self.kwargs = kwargs or {}
 
     def to_str(self) -> str:
