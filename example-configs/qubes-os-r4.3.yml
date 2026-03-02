@@ -19,6 +19,7 @@ distributions:
   - vm-trixie
   - vm-fc42
   - vm-fc43
+  - vm-fc44
 
 templates:
   - fedora-42-xfce:
@@ -85,7 +86,7 @@ components:
       branch: main
   - linux-firmware
   - linux-kernel:
-      branch: stable-6.12
+      branch: stable-6.18
       timeout: 21600
   - linux-kernel-latest:
       url: https://github.com/QubesOS/qubes-linux-kernel
